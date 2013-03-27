@@ -12,9 +12,9 @@
 namespace projectmeta\Stingray\Exception;
 
 /**
- * Stingray.
+ * ArrayNodeNotFoundException
  *
- * Get or Set array node using dot notation.
+ * Error thrown when unable to find an array key
  * 
  * @author Matthew Ratzke <matthew.003@me.com>
  */
