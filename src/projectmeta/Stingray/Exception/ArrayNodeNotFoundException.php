@@ -18,7 +18,7 @@ namespace projectmeta\Stingray\Exception;
  * 
  * @author Matthew Ratzke <matthew.003@me.com>
  */
-class ArrayNodeNotFoundException extends InvalidArgumentException
+class ArrayNodeNotFoundException extends \InvalidArgumentException
 {
     
     /**
