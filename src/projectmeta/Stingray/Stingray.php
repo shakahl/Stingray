@@ -36,7 +36,7 @@ class Stingray
     public function get(&$data, $string)
     {
 
-        return $this->iterateNode($data, $string);
+        return $this->iterateNodeGet($data, $string);
         
     }
 
@@ -48,11 +48,12 @@ class Stingray
      * @param &$data Array being searched
      * @param $string String used to search array
      * @param $val Value to set array node
+     * @param $silent If array node is missing it will be create
      */
-    public function set(&$data, $string, $val)
+    public function set(&$data, $string, $val, $silent = false)
     {
         
-        $node =& $this->iterateNode($data, $string);
+        $node =& $this->iterateNodeSet($data, $string, $silent);
         
         $node = $val;
         
@@ -68,7 +69,7 @@ class Stingray
      * 
      * @return $node Array Node
      */
-    private function &iterateNode(&$data, $string)
+    private function iterateNodeGet(&$data, $string)
     {
         
         $paths = explode('.', $string);
@@ -88,6 +89,56 @@ class Stingray
                 
                 throw new ArrayNodeNotFoundException($path, $string);
                 
+            }
+            
+        }
+        
+        return $node;
+
+    }
+    
+    /**
+     * Iterate through array
+     * 
+     * Iterate through array using dot delimited string
+     * 
+     * @param &$data Array being searched
+     * @param $string String used to search array
+     * @param $silent If array node is missing it will be create
+     * 
+     * @return $node Array Node
+     */
+    private function &iterateNodeSet(&$data, $string, $silent = false)
+    {
+        
+        $paths = explode('.', $string);
+        
+        $pathCount = Count($paths);
+        
+        $currentIteration = 0;
+        
+        $node =& $data;
+        
+        foreach ($paths as $path)
+        {
+            
+            if (array_key_exists($path, $node))
+            {
+                
+                $node =& $node[$path];
+                $currentIteration++;
+            
+            } elseif($silent == false)
+            {
+                
+                throw new ArrayNodeNotFoundException($path, $string);
+                
+            } elseif($currentIteration < $pathCount)
+            {
+                
+                $node[$path] = array();
+                $node =& $node[$path];
+                $currentIteration++;
             }
             
         }
