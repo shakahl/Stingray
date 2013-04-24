@@ -76,6 +76,14 @@ class FeatureContext extends BehatContext
     }                                                                                                                                                                                        
                                                                                                                                                                                              
     /**                                                                                                                                                                                      
+     * @Given /^a new value "([^"]*)"$/                                                                                                                                                      
+     */                                                                                                                                                                                      
+    public function aNewValue($arg1)                                                                                                                                                         
+    {                                                                                                                                                                                        
+        $this->newValue = $arg1;                                                                                                                                                        
+    }                                                                                                                                                                                        
+                                                                                                                                                                                             
+    /**                                                                                                                                                                                      
      * @Then /^it should pass constraint "([^"]*)"$/                                                                                                                                                  
      */                                                                                                                                                                                      
     public function itShouldReturn($arg1)                                                                                                                                                    
@@ -83,19 +91,7 @@ class FeatureContext extends BehatContext
         
         $value = $this->stingray->get($this->defaultArray, $this->nodeAlias);
 
-        $violations = $this->validator->validateValue($value, new $arg1());
-
-        if (count($violations) > 0)
-        {
-            
-            foreach ($violations as $error)
-            {
-                
-                echo $error->getMessage();
-                
-            }
-            
-        }
+        $this->validator->validateValue($value, new $arg1());
         
     }
     
@@ -105,22 +101,24 @@ class FeatureContext extends BehatContext
     public function itShouldBeWithinAnd($arg1, $arg2)                                                                                               
     {   
         
-     $value = $this->stingray->get($this->defaultArray, $this->nodeAlias);
+        $value = $this->stingray->get($this->defaultArray, $this->nodeAlias);
  
-     $violations = $this->validator->validateValue($value, new Assert\Range(array('min' => $arg1,'max' => $arg2)));
+        $this->validator->validateValue($value, new Assert\Range(array('min' => $arg1,'max' => $arg2)));
 
         
-         if (count($violations) > 0)
-        {
-            
-            foreach ($violations as $error)
-            {
-                
-                echo $error->getMessage();
-                
-            }
-            
-        }
     }
+    
+    /**                                                                                                                                                                                      
+     * @Then /^new value should pass constraint "([^"]*)"$/                                                                                                                                  
+     */                                                                                                                                                                                      
+    public function newValueShouldPassConstraint($arg1)                                                                                                                                      
+    {         
+
+        $this->stingray->set($this->defaultArray, $this->nodeAlias, $this->newValue);
+        $value = $this->stingray->get($this->defaultArray, $this->nodeAlias);
+
+        $this->validator->validateValue($value, new $arg1());
+        
+    }         
 
 }
